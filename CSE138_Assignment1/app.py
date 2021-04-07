@@ -1,10 +1,24 @@
+# ---------------------------------------------------------------------------------
+# Authors:   Rory Glenn
+# Email:     romglenn@ucsc.edu
+# Quarter:   Spring 2021
+# Class:     CSE 138 (Distributed Systems)
+# Project:   Assignment 1
+# Professor: Lindsey Kuper
+# 
+# app.py
+#   Implementation file for httpserver
+# ---------------------------------------------------------------------------------
+
+
 # To run the server
 #   flask run -p 8085
 
 import json
-from flask import Flask, request
+import flask
+from flask import request
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 RESPONSE_PING               = {"message":"I'm alive!!"}
 RESPONSE_GET                = {"message":"Get Message Received"}
@@ -18,9 +32,7 @@ STATUS_NOT_ALLOWED = 405
 GET  = "GET"
 POST = "POST"
 
-# curl --request GET --header "Content-Type: application/json" --write-out "\n%{http_code}\n" http://localhost:8085/ping
-# curl --request POST --write-out "\n%{http_code}\n" http://localhost:8085/ping
-@app.route('/ping', methods=['GET', 'POST'])
+@app.route('/ping', methods=[GET, POST])
 def ping():
     json_msg = ""
     if request.method == POST:
@@ -30,9 +42,7 @@ def ping():
     return json_msg
 
 
-# curl --request POST --write-out "\n%{http_code}\n" http://localhost:8085/ping/slug
-# curl --request GET --write-out "\n%{http_code}\n" http://localhost:8085/ping/slug
-@app.route('/ping/<name>', methods=['GET', 'POST'])
+@app.route('/ping/<name>', methods=[GET, POST])
 def pingname(name):
     json_msg = ""
     if request.method == GET:
@@ -42,14 +52,10 @@ def pingname(name):
     return json_msg
 
 
-
-# curl --request GET --header "Content-Type: application/json" --write-out "\n%{http_code}\n "http://localhost:8085/echo
-# curl --request POST --header "Content-Type: application/json" --write-out "\n%{http_code}\n "http://localhost:8085/echo?msg=foo
-# curl --request POST --write-out "\n%{http_code}\n"  http://localhost:8085/echo
-@app.route('/echo', methods=['GET', 'POST'])
+@app.route('/echo', methods=[GET, POST])
 def echo():
     json_msg = ""
-    msg = request.args.get('msg')
+    msg      = request.args.get('msg')
 
     if msg == "" or msg == None:
         if request.method == GET:
